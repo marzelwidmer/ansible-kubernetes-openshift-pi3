@@ -9,7 +9,7 @@
   register: kubeadm_init
 
 - name: Copy Kubernetes access config to ~/.kube/config on nodes
-  copy: remote_src=True src=/etc/kubernetes/admin.conf dest=/home/pi/.kube/config owner=pi
+  copy: remote_src=True src=/etc/kubernetes/admin.conf dest=/home/pirate/.kube/config owner=pirate
 
 # - debug: var=kubeadm_init.stdout
 
@@ -20,16 +20,7 @@
     flat: true
 
 - name: Rename cluster configuration
-  become: no
-  command: mv {{ playbook_dir }}/run/admin.conf {{ playbook_dir }}/run/pi-cluster.cfg
-  delegate_to: localhost
+  local_action: command mv {{ playbook_dir }}/run/admin.conf {{ playbook_dir }}/run/pi-cluster.cfg
 
 - name: Install CNI plugin for {{ overlay_network }}
   include: cni/{{ overlay_network }}.yml
-
-- name: Download cluster configuration
-  fetch:
-    src: "/etc/kubernetes/admin.conf"
-    dest: "{{ playbook_dir }}/run/"
-    flat: true
-  

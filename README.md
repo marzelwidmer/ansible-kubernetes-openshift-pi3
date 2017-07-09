@@ -1,4 +1,4 @@
-## Ansible 2 Playbooks for Docker / Kubernetes / OpenShift on RaspberryPis 3 - Hypriot flavor
+## Ansible 2.0 Playbooks for Docker / Kubernetes / OpenShift on RaspberryPis 3 - Hypriot flavor
 
 <img src="docs/images/pi_cluster.jpg" align="right" style="float:right; margin: 50px 0px 20px 30px"/>
 
@@ -44,7 +44,7 @@ Thanks to [Hypriot](https://github.com/hypriot/image-builder-rpi/releases/latest
 
 3. Insert you Micro-SD card in your Desktop computer (via an adapter possibly) and run
 ```
-flash --hostname n0 --ssid "mysid" --password "secret" hypriot.zip
+flash --hostname KCLUSTER0 --ssid "myWLAN" --password "myWLANpassword" hypriot.zip
 ```
    You will be asked to which device to write. Check this carefully, otherwise you could destroy your Desktop OS if selecting the the wrong device. Typically its something like `/dev/disk2` on OS X, but depends on the number of hard drives you have.
 4. Repeat step 2. to 3. for each Micro SD card. Please adapt the hostname before each round to **n1**, **n2**, **n3**.
@@ -55,21 +55,21 @@ It is now time to configure your WLAN router. This of course depends on which ro
 
 First of all you need to setup the SSID and password. Use the same credentials with which you have configured your images.
 
-My setup is, that I span a private network `192.168.23.0/24` for the Pi cluster which my MacBook also joins via its integrated WiFi.
+My setup is, that I span a private network `192.168.0.0/24` for the Pi cluster which my MacBook also joins via its integrated WiFi.
 
 The addresses I have chosen are :
 
 | IP                                    | Device          |
 | ------------------------------------- | --------------- |
-| `192.168.23.1`                        | WLAN Router     |
-| `192.168.23.100`                      | MacBook's WLAN  |
-| `192.168.23.200` ... `192.168.23.203` | Raspberry Pis   |
+| `192.168.0.1`                        | WLAN Router     |
+| `192.168.0.100`                      | MacBook's WLAN  |
+| `192.168.0.200` ... `192.168.0.203` | Raspberry Pis   |
 
 The MacBook is setup for NAT and forwarding from this private network to the internet. This [script](https://github.com/Project31/ansible-kubernetes-openshift-pi3/blob/master/tools/setup_nat_on_osx.sh) helps in setting up the forwarding and NAT rules on OS X.
 
-In order to configure your WLAN router you need to connect to it according to its setup instructions. The router is setup in **Access Point** mode with DHCP enabled. As soon as the MAC of the Pis are known (which you can see as soon as they connect for the first time via WiFi), I configured them to always use the same DHCP lease. For the TL-WR802N this can be done in the configuration section *DHCP -> Address Reservation*. In the *DHCP -> DHCP-Settings* the default gateway is set to `192.168.23.100`, which my notebook's WLAN IP.
+In order to configure your WLAN router you need to connect to it according to its setup instructions. The router is setup in **Access Point** mode with DHCP enabled. As soon as the MAC of the Pis are known (which you can see as soon as they connect for the first time via WiFi), I configured them to always use the same DHCP lease. For the TL-WR802N this can be done in the configuration section *DHCP -> Address Reservation*. In the *DHCP -> DHCP-Settings* the default gateway is set to `192.168.0.100`, which my notebook's WLAN IP.
 
-Startup all nodes, you should be able to ping every node in your cluster. I added `n0` ... `n3` to my notebook's `/etc/hosts` pointing to `192.168.23.200` ... `192.168.23.203` for convenience.
+Startup all nodes, you should be able to ping every node in your cluster. I added `KCLUSTER0` ... `KCLUSTER3` to my notebook's `/etc/hosts` pointing to `192.168.0.200` ... `192.168.0.203` for convenience.
 
 You should be able to ssh into every Pi with user *pirate* and password *hypriot*. Also, if you set up the forwarding on your desktop properly you should be able to ping from within the pi to the outside world. Internet access from the nodes is mandatory for setting up the nodes with Ansible
 
@@ -143,9 +143,9 @@ With this basic setup you have already a working Docker environment.
 
 The final step for a working Kubernetes cluster is to run
 
-    ansible-playbook -i hosts kubernetes.yml
+    sudo ansible-playbook -i hosts kubernetes.yml
 
-This will install one master at n0 and threed additional nodes n1, n2, n3 with the help of [kubeadm](http://kubernetes.io/docs/getting-started-guides/kubeadm/)
+This will install one master at KCLUSTER0 and threed additional nodes KCLUSTER1, KCLUSTER2, KCLUSTER3 with the help of [kubeadm](http://kubernetes.io/docs/getting-started-guides/kubeadm/)
 
 In addition this playbook does the following:
 
@@ -153,7 +153,7 @@ In addition this playbook does the following:
 * Installs kubectl and an alias `k`
 * Creates a `run/pi-cluster.cfg` which can be used for `kubectl` on the local host to access the pi cluster's master. Either use `kubectl --kubeconfig run/pi-cluster.cfg` or set the environment variable `export KUBECONFIG=$(pwd)/run/pi-cluster.cfg`
 
-The initial installation may take a bit until all infrastructure docker images has been pulled from the registry. Eventually you should be able to use `kubectl get nodes` from e.g. `n0` or from the localhost (if you set the config as described above).
+The initial installation may take a bit until all infrastructure docker images has been pulled from the registry. Eventually you should be able to use `kubectl get nodes` from e.g. `KCLUSTER0` or from the localhost (if you set the config as described above).
 
 ### Full Kubernetes reset
 
@@ -167,7 +167,7 @@ This is also needed in case you want to change one of the Pod or Services subnet
 
 In the `tools/` directory you find some useful scripts:
 
-* `cleanup_known_hosts.sh` for removing the entries for n0, n1, n2 and n3 in `~/.ssh/known_hosts` in case you want to completely reinstall the cluster
+* `cleanup_known_hosts.sh` for removing the entries for n0, n1, n2 and n3 in `~/.ssh/known_hosts` in case you want to completely restall the cluster
 * `setup_nat_on_osx.sh` switches on NAT so that the cluster can reach the Internet for loading the required images. Call it without arguments for usage informations
 * `setup_nat_off_osx.sh` switches off NAT again.
 * `halt_pis.sh` stop the cluster (needs still a bit of tuning)
