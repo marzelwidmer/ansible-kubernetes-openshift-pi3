@@ -36,6 +36,16 @@ Some remarks:
 Most of the installation is automated by using [Ansible](https://www.ansible.com/).
 Thanks to [Hypriot](https://github.com/hypriot/image-builder-rpi/releases/latest) images a complete headless setup is possible., but for the moment it  much more stable (I had strange kernel panics and 200% CPU load issues with the Hypriot image for no obvious reasons).
 
+#### Initial Pi Setup all in one command
+1. Install Hypriots' [flash](https://github.com/hypriot/flash) installer script. Follow the directions on the installation page.
+2. Insert you Micro-SD card in your Desktop computer (via an adapter possibly) and run
+
+    flash --hostname KCLUSTER0 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
+    flash --hostname KCLUSTER1 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
+    flash --hostname KCLUSTER2 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
+    flash --hostname KCLUSTER3 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
+
+#### Initial Pi Setup step by step 
 1. Download the latest Hyoriot image and store it as `hypriot.zip` :
 
         curl -L https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip -o hypriot.zip
@@ -47,7 +57,9 @@ Thanks to [Hypriot](https://github.com/hypriot/image-builder-rpi/releases/latest
 flash --hostname KCLUSTER0 --ssid "myWLAN" --password "myWLANpassword" hypriot.zip
 ```
    You will be asked to which device to write. Check this carefully, otherwise you could destroy your Desktop OS if selecting the the wrong device. Typically its something like `/dev/disk2` on OS X, but depends on the number of hard drives you have.
-4. Repeat step 2. to 3. for each Micro SD card. Please adapt the hostname before each round to **n1**, **n2**, **n3**.
+4. Repeat step 2. to 3. for each Micro SD card. Please adapt the hostname before each round to **KCLUSTER1**, **KCLUSTER2**, **KCLUSTER3**.
+
+
 
 ## Network Setup
 
@@ -162,6 +174,13 @@ In case you need a [full cleanup](http://stackoverflow.com/a/41372829/207604) of
     ansible-playbook -i hosts kubernetes-full-reset.yml
 
 This is also needed in case you want to change one of the Pod or Services subnets.
+
+
+### Obenshift Setup
+
+
+    sudo ansible-playbook -i hosts  openshift.yml
+
 
 ### Tools
 

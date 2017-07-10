@@ -1,0 +1,14 @@
+[pis]
+192.168.0.200 name=KCLUSTER0 host_extra="master registry"
+192.168.0.201 name=KCLUSTER1
+192.168.0.202 name=KCLUSTER2
+192.168.0.203 name=KCLUSTER3
+
+[master]
+192.168.0.200
+
+
+[nodes]
+192.168.0.201
+192.168.0.202
+192.168.0.203
