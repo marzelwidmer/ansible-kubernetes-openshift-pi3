@@ -39,11 +39,12 @@ Thanks to [Hypriot](https://github.com/hypriot/image-builder-rpi/releases/latest
 #### Initial Pi Setup all in one command
 1. Install Hypriots' [flash](https://github.com/hypriot/flash) installer script. Follow the directions on the installation page.
 2. Insert you Micro-SD card in your Desktop computer (via an adapter possibly) and run
-
+````
     flash --hostname KCLUSTER0 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
     flash --hostname KCLUSTER1 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
     flash --hostname KCLUSTER2 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
     flash --hostname KCLUSTER3 --ssid myWLAN-SSID --password myWLAN-password https://github.com/hypriot/image-builder-rpi/releases/download/v1.4.0/hypriotos-rpi-v1.4.0.img.zip
+````
 
 #### Initial Pi Setup step by step 
 1. Download the latest Hyoriot image and store it as `hypriot.zip` :
