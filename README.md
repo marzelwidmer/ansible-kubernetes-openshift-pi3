@@ -156,7 +156,7 @@ With this basic setup you have already a working Docker environment.
 
 The final step for a working Kubernetes cluster is to run
 
-    sudo ansible-playbook -i hosts kubernetes.yml
+    ansible-playbook -i hosts kubernetes.yml
 
 This will install one master at KCLUSTER0 and threed additional nodes KCLUSTER1, KCLUSTER2, KCLUSTER3 with the help of [kubeadm](http://kubernetes.io/docs/getting-started-guides/kubeadm/)
 
